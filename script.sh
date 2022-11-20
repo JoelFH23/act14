@@ -4,6 +4,7 @@ DB_USER='root'
 DB_PASSWD='mysql-123'
 DB_NAME='my_database'
 DB_HOST='172.17.0.2'
+
 rm *.sql
 function getImages(){
         echo '' > data.tmp
@@ -26,12 +27,12 @@ function getImages(){
         rm data.tmp
 }
 
-
-#mysql -u root -h 172.17.0.2 -pmysql-123
-
 # 1
 echo  Haciendo ping a google
-#ping -c2 google.com.mx
+ping -c2 google.com.mx
+
+/bin/sleep 2
+clear
 
 # 3
 echo "Abriendo navegador"
@@ -42,29 +43,38 @@ brave-browser https://unsplash.com/s/photos/linux & /bin/sleep 5
 echo "Creando la carpeta imagenes"
 rm -rf images
 mkdir images
+
+/bin/sleep 2
 clear
 
 # 4
 echo "Obteniendo las imagenes"
-#getImages
+getImages
+
+/bin/sleep 2
+clear
 
 # 5
 echo "Moviendo las imagenes a la carpeta images"
-#mv *.png images/
+mv *.png images/
 
+/bin/sleep 2
+clear
 
 # 6
 echo "Abriendo una imagen random"
-#/bin/xviewer images/$((1 + $RANDOM % 3)).png & /bin/sleep 3
+/bin/xviewer images/$((1 + $RANDOM % 3)).png & /bin/sleep 3
+
+/bin/sleep 2
+clear
 
 # 7
 echo "Cerrando la imagen"
-#/bin/killall -9 /bin/xviewer
+/bin/killall -9 /bin/xviewer
 
-#xviewer > /dev/null 2>&1 & sleep 2
-/bin/sleep 0.4
-
+/bin/sleep 2
 clear
+
 TABLE='users'
 
 function insertData(){
@@ -83,7 +93,6 @@ function getRandomNames(){
         done
 }
 
-clear
 # 8
 echo "obteniendo datos aleatorios"
 getRandomNames
@@ -99,17 +108,23 @@ function insertToDatabase(){
         rm names.tmp
 }
 
+/bin/sleep 2
 clear
+
 # 9
 echo "ingresando datos a la base de datos"
 insertToDatabase
 
-#mysqldump -u $DB_USER -h $DB_HOST -p$DB_PASSWD $DB_NAME
 
+/bin/sleep 2
 clear
+
 # 10
 echo "Creando Backup de la base de datos $DB_NAME"
 mysqldump -u $DB_USER -h $DB_HOST -p$DB_PASSWD $DB_NAME > "backup_$(date +"%F_%T")".sql
+
+/bin/sleep 2
+clear
 
 # 11
 echo "Abriendo backup"
@@ -117,11 +132,15 @@ echo "Abriendo backup"
 
 /bin/killall -9 /bin/xed
 
+/bin/sleep 2
 clear
-/bin/sleep 0.6
+
 #12
 echo "Listando los procesos"
 /bin/ps -a
+
+clear
+/bin/sleep 0.6
 
 # 13
 echo "Creando index.html"
@@ -137,8 +156,8 @@ echo "Listando todos los archivos"
 lsd -la
 
 /bin/sleep 3
-
 clear
+
 echo "Listando el /etc/passwd"
 /bin/bat /etc/passwd & /bin/sleep 3
 
