@@ -33,26 +33,31 @@ function getImages(){
 echo  Haciendo ping a google
 #ping -c2 google.com.mx
 
-# 2
+# 3
+echo "Abriendo navegador"
+brave-browser https://unsplash.com/s/photos/linux & /bin/sleep 5
+/bin/killall -9 brave > /dev/null 2>&1
+
+# 3
 echo "Creando la carpeta imagenes"
 rm -rf images
 mkdir images
 clear
 
-# 3
+# 4
 echo "Obteniendo las imagenes"
 #getImages
 
-# 4
+# 5
 echo "Moviendo las imagenes a la carpeta images"
 #mv *.png images/
 
 
-# 5
+# 6
 echo "Abriendo una imagen random"
 #/bin/xviewer images/$((1 + $RANDOM % 3)).png & /bin/sleep 3
 
-# 6
+# 7
 echo "Cerrando la imagen"
 #/bin/killall -9 /bin/xviewer
 
@@ -79,7 +84,7 @@ function getRandomNames(){
 }
 
 clear
-# 7
+# 8
 echo "obteniendo datos aleatorios"
 getRandomNames
 
@@ -95,13 +100,46 @@ function insertToDatabase(){
 }
 
 clear
-# 8
+# 9
 echo "ingresando datos a la base de datos"
 insertToDatabase
 
 #mysqldump -u $DB_USER -h $DB_HOST -p$DB_PASSWD $DB_NAME
 
 clear
-# 9
+# 10
 echo "Creando Backup de la base de datos $DB_NAME"
-mysqldump -u $DB_USER -h $DB_HOST -p$DB_PASSWD $DB_NAME > "backup_$(date +"%F_%T")".sql 
+mysqldump -u $DB_USER -h $DB_HOST -p$DB_PASSWD $DB_NAME > "backup_$(date +"%F_%T")".sql
+
+# 11
+echo "Abriendo backup"
+/bin/xed *.sql & /bin/sleep 4
+
+/bin/killall -9 /bin/xed
+
+clear
+/bin/sleep 0.6
+#12
+echo "Listando los procesos"
+/bin/ps -a
+
+# 13
+echo "Creando index.html"
+echo "<h1>Hello World</h1>" > index.html
+brave-browser index.html & /bin/sleep 6
+/bin/killall -9 brave
+rm index.html
+/bin/sleep 0.6
+
+clear
+# 14
+echo "Listando todos los archivos"
+lsd -la
+
+/bin/sleep 3
+
+clear
+echo "Listando el /etc/passwd"
+/bin/bat /etc/passwd & /bin/sleep 3
+
+/bin/killall -9 /bin/bat
