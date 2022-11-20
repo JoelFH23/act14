@@ -4,37 +4,7 @@ DB_USER='root'
 DB_PASSWD='mysql-123'
 DB_NAME='my_database'
 DB_HOST='172.17.0.2'
-
-#sudo docker ps -a
-
-#mysql -u root -h 172.17.0.2 -pmysql-123
-
-# Haciendo ping a google
-#ping -c4 google.com.mx
-
-#mysqldump -u $DB_USER -h $DB_HOST -p$DB_PASSWD $DB_NAME > "backup_$(date +"%F_%T")".sql 
-
-#xviewer > /dev/null 2>&1 & sleep 2
-
-#/bin/xviewer $HOME/Documents/imagenes/* & /bin/sleep 3
-
-#/bin/killall -9 /bin/xviewer
-
-echo "Obteniendo nombres"
-#/bin/curl -s https://names.drycodes.com/10\?nameOptions\=boy_names | tr -d [ | tr -d ] | tr "_" " " > data.txt
-#/bin/curl -s https://names.drycodes.com/10\?nameOptions\=boy_names --output data.txt
-
-function getRandomNames(){
-        echo '' > names.tmp
-        while [ "$(cat names.tmp | wc -l )" == "1" ]; do
-                curl -s https://names.drycodes.com/10\?nameOptions\=boy_names | html2text > names.tmp
-        done
-        names=$(cat names.tmp)
-        for name in $names; do
-                echo $name
-        done
-}
-
+rm *.sql
 function getImages(){
         echo '' > data.tmp
 
@@ -55,28 +25,41 @@ function getImages(){
         done
         rm data.tmp
 }
-echo "Creando la carpeta imagenes"
-#rm -rf images
-#mkdir images
-#clear
 
+
+#mysql -u root -h 172.17.0.2 -pmysql-123
+
+# 1
+echo  Haciendo ping a google
+#ping -c2 google.com.mx
+
+# 2
+echo "Creando la carpeta imagenes"
+rm -rf images
+mkdir images
+clear
+
+# 3
 echo "Obteniendo las imagenes"
 #getImages
 
+# 4
 echo "Moviendo las imagenes a la carpeta images"
 #mv *.png images/
 
+
+# 5
 echo "Abriendo una imagen random"
 #/bin/xviewer images/$((1 + $RANDOM % 3)).png & /bin/sleep 3
+
+# 6
 echo "Cerrando la imagen"
 #/bin/killall -9 /bin/xviewer
 
+#xviewer > /dev/null 2>&1 & sleep 2
+/bin/sleep 0.4
 
-curl -s https://names.drycodes.com/\10\?nameOptions\=boy_names > names.tmp
-names=$(cat names.tmp | tr -d [ | tr -d ] | tr "," "\n")
-
-#mysqldump -u $DB_USER -h $DB_HOST -p$DB_PASSWD $DB_NAME
-
+clear
 TABLE='users'
 
 function insertData(){
@@ -85,12 +68,40 @@ INSERT INTO $TABLE (\`name\`) VALUES ($1);
 EOF
 }
 
-echo "ingresando datos a la base de datos"
-for name in $names; do
-        newName=$(echo $name | tr "_" " ")
-        echo $newName
-        insertData "$newName" > /dev/null 2>&1
-        /bin/sleep 0.123
-done
+function getRandomNames(){
+        curl -s https://names.drycodes.com/\10\?nameOptions\=boy_names > names.tmp
+        names=$(cat names.tmp | tr -d [ | tr -d ] | tr "," "\n")
+        for name in $names; do
+                newName=$(echo $name | tr "_" " ")
+                echo $newName
+                /bin/sleep 0.123
+        done
+}
 
-rm names.tmp
+clear
+# 7
+echo "obteniendo datos aleatorios"
+getRandomNames
+
+function insertToDatabase(){
+        names=$(cat names.tmp | tr -d [ | tr -d ] | tr "," "\n")
+        for name in $names; do
+                newName=$(echo $name | tr "_" " ")
+                echo "Ingresando: $newName"
+                insertData "$newName" > /dev/null 2>&1
+                /bin/sleep 0.123
+        done
+        rm names.tmp
+}
+
+clear
+# 8
+echo "ingresando datos a la base de datos"
+insertToDatabase
+
+#mysqldump -u $DB_USER -h $DB_HOST -p$DB_PASSWD $DB_NAME
+
+clear
+# 9
+echo "Creando Backup de la base de datos $DB_NAME"
+mysqldump -u $DB_USER -h $DB_HOST -p$DB_PASSWD $DB_NAME > "backup_$(date +"%F_%T")".sql 
